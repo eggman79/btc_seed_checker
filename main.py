@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
 class Address:
-    native: str
+    legacy: str
     segwit: str
 
 def derive_address(mnemonic: str, passphrase: str = "", account: int = 0, change: Bip44Changes = Bip44Changes.CHAIN_EXT, address_index: int = 0) -> Address:
@@ -26,9 +26,9 @@ def derive_address(mnemonic: str, passphrase: str = "", account: int = 0, change
     # Generate seed from mnemonic and passphrase
     seed_bytes = Bip39SeedGenerator(mnemonic).Generate(passphrase)
 
-    def get_address(seed_bytes, native) -> str:
-        coins = Bip44Coins.BITCOIN if native else Bip84Coins.BITCOIN
-        bip_module = Bip44 if native else Bip84
+    def get_address(seed_bytes, legacy) -> str:
+        coins = Bip44Coins.BITCOIN if legacy else Bip84Coins.BITCOIN
+        bip_module = Bip44 if legacy else Bip84
         bip_mst = bip_module.FromSeed(seed_bytes, coins)
         bip_acc = bip_mst.Purpose().Coin().Account(account)
         bip_chg = bip_acc.Change(change)
@@ -82,7 +82,7 @@ def main():
     print('===============================================')
     print('Legacy')
     print('===============================================')
-    print_balance(address.native)
+    print_balance(address.legacy)
     print('===============================================')
     print('Segwit')
     print('===============================================')
